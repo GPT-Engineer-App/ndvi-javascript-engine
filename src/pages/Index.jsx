@@ -1,17 +1,44 @@
-// Update this page (the content is just a fallback if you fail and example)
-// Use chakra-ui
+import { useEffect } from "react";
 import { Container, Text, VStack } from "@chakra-ui/react";
-
-// Example of using react-icons
-// import { FaRocket } from "react-icons/fa";
-// <IconButton aria-label="Add" icon={<FaRocket />} size="lg" />; // IconButton would also have to be imported from chakra
+import ee from "@google/earthengine";
 
 const Index = () => {
+  useEffect(() => {
+    // Initialize the Earth Engine API
+    ee.initialize();
+
+    // Import the satellite image
+    const image = ee.Image("LANDSAT/LC08/C01/T1_SR/LC08_044034_20140318");
+
+    // Select the NIR and Red bands
+    const nir = image.select("B5");
+    const red = image.select("B4");
+
+    // Calculate the NDVI
+    const ndvi = nir.subtract(red).divide(nir.add(red)).rename("NDVI");
+
+    // Define visualization parameters
+    const ndviParams = {
+      min: -1,
+      max: 1,
+      palette: ["blue", "white", "green"],
+    };
+
+    // Add the NDVI layer to the map
+    const map = new ee.Map();
+    map.centerObject(image, 9);
+    map.addLayer(ndvi, ndviParams, "NDVI");
+
+    // Render the map
+    map.render(document.getElementById("map"));
+  }, []);
+
   return (
     <Container centerContent maxW="container.md" height="100vh" display="flex" flexDirection="column" justifyContent="center" alignItems="center">
       <VStack spacing={4}>
-        <Text fontSize="2xl">Your Blank Canvas</Text>
-        <Text>Chat with the agent to start making edits.</Text>
+        <Text fontSize="2xl">NDVI Calculation with Google Earth Engine</Text>
+        <Text>Visualize the NDVI result on the map below.</Text>
+        <div id="map" style={{ width: "100%", height: "500px" }}></div>
       </VStack>
     </Container>
   );
