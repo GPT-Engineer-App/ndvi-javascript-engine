@@ -32,5 +32,8 @@
     },
     "prettier": {
         "printWidth": 99999999
+    },
+    "resolutions": {
+        "@google/earthengine": "0.1.407"
     }
 }
