@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { Container, Text, VStack } from "@chakra-ui/react";
-import ee from "@google/earthengine";
 
 const Index = () => {
   useEffect(() => {
@@ -9,6 +8,7 @@ const Index = () => {
     script.async = true;
     script.onload = () => {
       // Initialize the Earth Engine API
+      const ee = window.ee;
       ee.initialize();
 
       // Import the satellite image
