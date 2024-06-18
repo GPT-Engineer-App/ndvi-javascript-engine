@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Container, Text, VStack } from "@chakra-ui/react";
-// Import the Earth Engine API
+import ee from "@google/earthengine"; // Properly import 'ee'
 import { loadEarthEngine } from "../utils/earthEngine";
 
 const Index = () => {
