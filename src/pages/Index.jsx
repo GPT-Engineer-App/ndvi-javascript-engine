@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { Container, Text, VStack } from "@chakra-ui/react";
-import ee from "@google/earthengine";
+// Import the Earth Engine API
+import { loadEarthEngine } from "../utils/earthEngine";
 
 const Index = () => {
   useEffect(() => {
     const initializeEE = async () => {
       try {
-        await ee.data.authenticateViaOauth();
-        ee.initialize();
+        await loadEarthEngine();
 
         // Import the satellite image
         const image = ee.Image("LANDSAT/LC08/C01/T1_SR/LC08_044034_20140318");
