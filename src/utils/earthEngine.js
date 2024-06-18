@@ -7,3 +7,5 @@ export const loadEarthEngine = async () => {
     }, reject);
   });
 };
+
+export { ee };
