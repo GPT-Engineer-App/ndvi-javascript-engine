@@ -1,44 +1,44 @@
 import { useEffect } from "react";
-
-let ee;
 import { Container, Text, VStack } from "@chakra-ui/react";
+import ee from "@google/earthengine";
 
 const Index = () => {
   useEffect(() => {
-    const script = document.createElement("script");
-    script.src = "https://earthengine.googleapis.com/v1alpha/projects/earthengine-legacy/thumbnails/thumbnail";
-    script.async = true;
-    script.onload = () => {
-      const ee = window.ee;
-      // Initialize the Earth Engine API
-      ee.initialize();
+    const initializeEE = async () => {
+      try {
+        await ee.data.authenticateViaOauth();
+        ee.initialize();
 
-      // Import the satellite image
-      const image = ee.Image("LANDSAT/LC08/C01/T1_SR/LC08_044034_20140318");
+        // Import the satellite image
+        const image = ee.Image("LANDSAT/LC08/C01/T1_SR/LC08_044034_20140318");
 
-      // Select the NIR and Red bands
-      const nir = image.select("B5");
-      const red = image.select("B4");
+        // Select the NIR and Red bands
+        const nir = image.select("B5");
+        const red = image.select("B4");
 
-      // Calculate the NDVI
-      const ndvi = nir.subtract(red).divide(nir.add(red)).rename("NDVI");
+        // Calculate the NDVI
+        const ndvi = nir.subtract(red).divide(nir.add(red)).rename("NDVI");
 
-      // Define visualization parameters
-      const ndviParams = {
-        min: -1,
-        max: 1,
-        palette: ["blue", "white", "green"],
-      };
+        // Define visualization parameters
+        const ndviParams = {
+          min: -1,
+          max: 1,
+          palette: ["blue", "white", "green"],
+        };
 
-      // Add the NDVI layer to the map
-      const map = new ee.Map();
-      map.centerObject(image, 9);
-      map.addLayer(ndvi, ndviParams, "NDVI");
+        // Add the NDVI layer to the map
+        const map = new ee.Map();
+        map.centerObject(image, 9);
+        map.addLayer(ndvi, ndviParams, "NDVI");
 
-      // Render the map
-      map.render(document.getElementById("map"));
+        // Render the map
+        map.render(document.getElementById("map"));
+      } catch (error) {
+        console.error("Error initializing Earth Engine", error);
+      }
     };
-    document.body.appendChild(script);
+
+    initializeEE();
   }, []);
 
   return (
